@@ -1,0 +1,105 @@
+# Python & Environment
+__pycache__/
+*.pyc
+*.pyo
+venv/
+'venv_fixed/
+.env
+.DS_Store
+
+# IDEs
+.idea/
+
+# Project Specific: Audio & Temp
+temp/
+output/
+*.mid
+*.mp3
+*.wav
+*.flac
+
+# Large Files & ML Models
+models/
+*.ckpt
+*.pt
+*.pth
+
+.venv_basic_pitch/
+.*venv*/
+
+# Catch all virtual environments
+*env/
+.*env*/
+grimlock_env/
+
+# Catch all library folders
+lib/
+site-packages/
+bin/
+
+# Catch any PyCharm exports
+exportToHTML/
+
+# --- Virtual Environments (Catch-all) ---
+*env*/
+venv/
+.venv/
+Scripts/
+Include/
+Lib/
+share/
+pyvenv.cfg
+
+# --- IDE & Metadata ---
+.idea/
+.vscode/
+exportToHTML/
+.DS_Store
+__pycache__/
+*.pyc
+
+# --- Audio & Temporary Files ---
+temp/
+output/
+*.mid
+*.mp3
+*.wav
+*.flac
+
+# --- Large AI Models ---
+models/
+*.ckpt
+*.pt
+*.pth
+*.exe
+
+# --- Embedded Repos (like madmom) ---
+# If you want to keep your own code but ignore the library's internal git
+madmom/.git
+
+
+# Ignore ANY folder containing 'venv' or 'env'
+*env*/
+venv*/
+.venv*/
+
+# Specific troublesome folders
+Scripts/
+Lib/
+share/
+pyvenv.cfg
+exportToHTML/
+
+# IDE and Python junk
+.idea/
+__pycache__/
+*.pyc
+
+# Audio/Large Files
+temp/
+output/
+*.mid
+*.mp3
+*.wav
+*.flac
+*.exe

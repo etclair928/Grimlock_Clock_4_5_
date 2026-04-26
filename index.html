@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grimlock 4.5 — Fascinating Rhythm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Monaco', 'Cascadia Code', monospace;
+            background: #EBECF0;
+            min-height: 100vh;
+            color: #1a1a1a;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 52px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #D97706, #F59E0B, #B45309, #92400E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .header .version {
+            font-size: 14px;
+            background: linear-gradient(135deg, #D97706, #F59E0B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(217, 119, 6, 0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-top: 10px;
+            color: #B45309;
+            border: 1px solid rgba(217, 119, 6, 0.3);
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            margin: 5px 3px;
+            color: #D97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* Drop Zone */
+        .drop-zone {
+            border: 2px dashed #A0AEC0;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #FFFFFF;
+            margin-bottom: 20px;
+        }
+
+        .drop-zone:hover {
+            border-color: #D97706;
+            background: rgba(217, 119, 6, 0.05);
+        }
+
+        .drop-zone.drag-over {
+            border-color: #D97706;
+            background: rgba(217, 119, 6, 0.1);
+        }
+
+        .drop-zone .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .file-name {
+            font-size: 14px;
+            color: #D97706;
+            margin-top: 10px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #FFFFFF;
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .control-group label {
+            font-size: 12px;
+            cursor: pointer;
+            color: #1a1a1a;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            background: #FFFFFF;
+            border: 1px solid #D97706;
+            color: #D97706;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            accent-color: #D97706;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Guided Mode Panel */
+        .guided-panel {
+            background: #F8FAFC;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #E2E8F0;
+            display: none;
+        }
+
+        .guided-panel h4 {
+            color: #D97706;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .guided-inputs {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .guided-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guided-input label {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            background: #1a1a1a;
+            border: none;
+            padding: 16px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 16px;
+            cursor: pointer;
+            color: #FFFFFF;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            background: #2d2d2d;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Status Panel */
+        .status-panel {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background: #E2E8F0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #D97706, #F59E0B, #B45309);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+
+        .status-text {
+            font-size: 14px;
+            margin: 10px 0;
+            color: #1a1a1a;
+        }
+
+        .stage-text {
+            font-size: 12px;
+            color: #64748B;
+            font-family: monospace;
+        }
+
+        .connection-status {
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .connection-status.connected {
+            background: rgba(217, 119, 6, 0.1);
+            color: #B45309;
+            border: 1px solid rgba(217, 119, 6, 0.3);
+        }
+
+        .connection-status.disconnected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #DC2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .connection-status.connecting {
+            background: rgba(245, 158, 11, 0.1);
+            color: #D97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .timer-clock {
+            font-family: 'Monaco', 'Cascadia Code', monospace;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+            color: #D97706;
+            letter-spacing: 2px;
+        }
+
+        .confidence-display {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+            color: #64748B;
+        }
+
+        /* Results Panel */
+        .results-panel {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .results-panel h3 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border-left: 3px solid #D97706;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #64748B;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #D97706, #F59E0B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .track-stats {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .track-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .track-row:last-child {
+            border-bottom: none;
+        }
+
+        .track-name {
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .track-count {
+            color: #D97706;
+            font-weight: bold;
+        }
+
+        .deep-analysis-badge {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-top: 15px;
+            color: #D97706;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #EF4444;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #DC2626;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 10px;
+            color: #64748B;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>GRIMLOCK CLOCK</h1>
+        <div class="version">Version 4.5 — "Fascinating Rhythm"</div>
+        <div class="badge">🎷 NMF-First · Schoenberg Mirrors · Deep Analysis · Guided Mode</div>
+        <div>
+            <span class="feature-badge">🧠 NMF Primary</span>
+            <span class="feature-badge">🪞 Schoenberg Mirrors</span>
+            <span class="feature-badge">🐢 Deep Analysis (0.66x)</span>
+            <span class="feature-badge">🎚️ Guided Mode</span>
+            <span class="feature-badge">📝 Music Box</span>
+        </div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div id="dropZone" class="drop-zone">
+        <div class="icon">🎵</div>
+        <p style="color: #A0AEC0;">Drag & drop audio file here or click to select</p>
+        <p style="font-size: 12px; color: #A0AEC0;">WAV, MP3, FLAC, M4A, OGG, AAC · Max 50MB</p>
+        <div id="fileName" class="file-name"></div>
+        <input type="file" id="fileInput" accept="audio/*">
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <div class="control-group">
+            <label>🧠 Deep Analysis (slow-down):</label>
+            <input type="checkbox" id="deepAnalysisCheckbox" checked style="accent-color: #D97706;">
+        </div>
+        <div class="control-group">
+            <label>📝 Music Box Logging:</label>
+            <input type="checkbox" id="musicBoxCheckbox" style="accent-color: #D97706;">
+        </div>
+        <div class="control-group">
+            <label>🎚️ Guided Mode:</label>
+            <input type="checkbox" id="guidedModeCheckbox" style="accent-color: #D97706;">
+        </div>
+        <div class="control-group">
+            <label>⏱️ Analysis window:</label>
+            <select id="truncateSelect">
+                <option value="30">30 sec (quick test)</option>
+                <option value="60" selected>60 sec (recommended)</option>
+                <option value="120">120 sec</option>
+                <option value="0">Full track</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Guided Mode Panel -->
+    <div id="guidedPanel" class="guided-panel">
+        <h4>🎚️ Guided Mode — Override Automatic Detection</h4>
+        <div class="guided-inputs">
+            <div class="guided-input">
+                <label>🎵 Tempo (BPM):</label>
+                <input type="number" id="userTempo" step="1" placeholder="e.g., 130">
+            </div>
+            <div class="guided-input">
+                <label>⏱️ Time Signature:</label>
+                <select id="userTimeSig">
+                    <option value="">Auto-detect</option>
+                    <option value="4/4">4/4</option>
+                    <option value="3/4">3/4</option>
+                    <option value="5/4">5/4</option>
+                    <option value="7/4">7/4</option>
+                    <option value="6/8">6/8</option>
+                </select>
+            </div>
+            <div class="guided-input">
+                <label>🎼 Key:</label>
+                <select id="userKey">
+                    <option value="">Auto-detect</option>
+                    <option value="C">C Major</option>
+                    <option value="Cm">C Minor</option>
+                    <option value="G">G Major</option>
+                    <option value="Gm">G Minor</option>
+                    <option value="D">D Major</option>
+                    <option value="Dm">D Minor</option>
+                    <option value="A">A Major</option>
+                    <option value="Am">A Minor</option>
+                    <option value="E">E Major</option>
+                    <option value="Em">E Minor</option>
+                    <option value="F">F Major</option>
+                    <option value="Fm">F Minor</option>
+                    <option value="Bb">Bb Major</option>
+                    <option value="Bbm">Bb Minor</option>
+                    <option value="Eb">Eb Major</option>
+                    <option value="Ebm">Eb Minor</option>
+                    <option value="Ab">Ab Major</option>
+                    <option value="Abm">Ab Minor</option>
+                </select>
+            </div>
+        </div>
+        <p style="font-size: 11px; color: #64748B; margin-top: 12px;">💡 Guided mode locks these values. Leave empty for auto-detection.</p>
+    </div>
+
+    <!-- Launch Button -->
+    <button id="analyzeBtn" class="btn">⚡ LAUNCH NEURAL PIPELINE ⚡</button>
+
+    <!-- Loading / Status Panel -->
+    <div id="loadingPanel" class="hidden">
+        <div class="status-panel">
+            <div id="connectionStatus" class="connection-status connecting">🔌 Connecting to server...</div>
+            <div id="elapsed-time" class="timer-clock">0:00</div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill">0%</div>
+            </div>
+            <div id="statusText" class="status-text">Initializing pipeline...</div>
+            <div id="stageText" class="stage-text">Grimlock 4.5 — Fascinating Rhythm</div>
+            <div id="confidenceText" class="confidence-display">-- Confidence</div>
+        </div>
+    </div>
+
+    <!-- Error Panel -->
+    <div id="errorPanel" class="error hidden"></div>
+
+    <!-- Results Panel -->
+    <div id="resultsPanel" class="hidden">
+        <div class="results-panel">
+            <h3>📊 Transcription Results</h3>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">🎹 TOTAL NOTES</div>
+                    <div id="totalNotes" class="metric-value">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">🥁 DRUM HITS</div>
+                    <div id="drumHits" class="metric-value">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">🎚️ TEMPO (BPM)</div>
+                    <div id="tempo" class="metric-value">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">⏱️ TIME SIG</div>
+                    <div id="timeSig" class="metric-value">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">🎼 KEY</div>
+                    <div id="key" class="metric-value">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">🎯 SONIC SCORE</div>
+                    <div id="score" class="metric-value">0%</div>
+                </div>
+            </div>
+
+            <div class="track-stats">
+                <div class="track-row">
+                    <span class="track-name">🎹 Piano</span>
+                    <span id="pianoCount" class="track-count">0</span>
+                </div>
+                <div class="track-row">
+                    <span class="track-name">🎸 Bass</span>
+                    <span id="bassCount" class="track-count">0</span>
+                </div>
+                <div class="track-row">
+                    <span class="track-name">🥁 Drums</span>
+                    <span id="drumsCount" class="track-count">0</span>
+                </div>
+                <div class="track-row">
+                    <span class="track-name">🎤 Melody</span>
+                    <span id="melodyCount" class="track-count">0</span>
+                </div>
+                <div class="track-row">
+                    <span class="track-name">📻 Other</span>
+                    <span id="otherCount" class="track-count">0</span>
+                </div>
+            </div>
+
+            <div id="deepAnalysisBadge" class="deep-analysis-badge hidden">🐢 Deep Analysis Triggered</div>
+
+            <button id="downloadBtn" class="btn" style="margin-bottom: 0;">⬇️ DOWNLOAD 5-TRACK MIDI</button>
+        </div>
+    </div>
+
+    <footer>
+        Grimlock 4.5 — "Fascinating Rhythm" | NMF-First · Schoenberg Mirrors · Deep Analysis · Guided Mode
+    </footer>
+</div>
+
+<script>
+    // ============================================================
+    // WEB WORKER FOR FILE UPLOADS (Embedded)
+    // ============================================================
+    const workerScript = `
+    let Status = {
+      SUCCESS_HEADER: -1,
+      SUCCESS_EOF: -2,
+      ERROR_TIMEOUT: -3,
+      ERROR_EXCEPTION: -4,
+    };
+
+    let connections = new Map();
+    let nextConnectionID = 1;
+    const encoder = new TextEncoder();
+
+    self.addEventListener("message", async function (event) {
+      if (event.data.close) {
+        let connectionID = event.data.close;
+        connections.delete(connectionID);
+        return;
+      } else if (event.data.getMore) {
+        let connectionID = event.data.getMore;
+        let { curOffset, value, reader, intBuffer, byteBuffer } =
+          connections.get(connectionID);
+
+        if (!value || curOffset >= value.length) {
+          try {
+            let readResponse = await reader.read();
+
+            if (readResponse.done) {
+              connections.delete(connectionID);
+              Atomics.store(intBuffer, 0, Status.SUCCESS_EOF);
+              Atomics.notify(intBuffer, 0);
+              return;
+            }
+            curOffset = 0;
+            connections.get(connectionID).value = readResponse.value;
+            value = readResponse.value;
+          } catch (error) {
+            console.log("Request exception:", error);
+            let errorBytes = encoder.encode(error.message);
+            let written = errorBytes.length;
+            byteBuffer.set(errorBytes);
+            intBuffer[1] = written;
+            Atomics.store(intBuffer, 0, Status.ERROR_EXCEPTION);
+            Atomics.notify(intBuffer, 0);
+          }
+        }
+
+        let curLen = value.length - curOffset;
+        if (curLen > byteBuffer.length) {
+          curLen = byteBuffer.length;
+        }
+        byteBuffer.set(value.subarray(curOffset, curOffset + curLen), 0);
+
+        Atomics.store(intBuffer, 0, curLen);
+        Atomics.notify(intBuffer, 0);
+        curOffset += curLen;
+        connections.get(connectionID).curOffset = curOffset;
+
+        return;
+      } else {
+        let connectionID = nextConnectionID;
+        nextConnectionID += 1;
+        const intBuffer = new Int32Array(event.data.buffer);
+        const byteBuffer = new Uint8Array(event.data.buffer, 8);
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 600000);
+
+        let fetchParams = { ...event.data.fetchParams };
+
+        // Handle FormData for file uploads
+        if (event.data.formData && event.data.formData instanceof FormData) {
+          fetchParams.body = event.data.formData;
+          if (fetchParams.headers) {
+            delete fetchParams.headers['Content-Type'];
+          }
+        }
+
+        const extendedParams = {
+          ...fetchParams,
+          signal: controller.signal,
+          keepalive: true
+        };
+
+        try {
+          const response = await fetch(event.data.url, extendedParams);
+          clearTimeout(timeoutId);
+
+          var headers = [];
+          for (const pair of response.headers.entries()) {
+            headers.push([pair[0], pair[1]]);
+          }
+          let headerObj = {
+            headers: headers,
+            status: response.status,
+            connectionID,
+          };
+          const headerText = JSON.stringify(headerObj);
+          let headerBytes = encoder.encode(headerText);
+          let written = headerBytes.length;
+          byteBuffer.set(headerBytes);
+          intBuffer[1] = written;
+
+          connections.set(connectionID, {
+            reader: response.body.getReader(),
+            intBuffer: intBuffer,
+            byteBuffer: byteBuffer,
+            value: undefined,
+            curOffset: 0,
+          });
+
+          Atomics.store(intBuffer, 0, Status.SUCCESS_HEADER);
+          Atomics.notify(intBuffer, 0);
+        } catch (error) {
+          console.log("Request exception:", error);
+
+          let errorMessage = error.name === 'AbortError'
+            ? "Request timeout (10 minutes) - the file may be too large or the server is busy"
+            : error.message;
+
+          let errorBytes = encoder.encode(errorMessage);
+          let written = errorBytes.length;
+          byteBuffer.set(errorBytes);
+          intBuffer[1] = written;
+          Atomics.store(intBuffer, 0, Status.ERROR_EXCEPTION);
+          Atomics.notify(intBuffer, 0);
+        }
+      }
+    });
+
+    self.postMessage({ inited: true });
+    `;
+
+    // Create blob URL for worker
+    const blob = new Blob([workerScript], { type: 'application/javascript' });
+    const workerUrl = URL.createObjectURL(blob);
+    let worker = new Worker(workerUrl);
+
+    // ============================================================
+    // DOM Elements
+    // ============================================================
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const loadingPanel = document.getElementById('loadingPanel');
+    const resultsPanel = document.getElementById('resultsPanel');
+    const errorPanel = document.getElementById('errorPanel');
+    const progressFill = document.getElementById('progressFill');
+    const statusTextSpan = document.getElementById('statusText');
+    const stageTextSpan = document.getElementById('stageText');
+    const confidenceTextSpan = document.getElementById('confidenceText');
+    const connectionStatusSpan = document.getElementById('connectionStatus');
+    const fileNameDiv = document.getElementById('fileName');
+    const truncateSelect = document.getElementById('truncateSelect');
+    const deepAnalysisCheckbox = document.getElementById('deepAnalysisCheckbox');
+    const musicBoxCheckbox = document.getElementById('musicBoxCheckbox');
+    const guidedModeCheckbox = document.getElementById('guidedModeCheckbox');
+    const guidedPanel = document.getElementById('guidedPanel');
+    const userTempo = document.getElementById('userTempo');
+    const userTimeSig = document.getElementById('userTimeSig');
+    const userKey = document.getElementById('userKey');
+
+    // Result spans
+    const totalNotesSpan = document.getElementById('totalNotes');
+    const drumHitsSpan = document.getElementById('drumHits');
+    const tempoSpan = document.getElementById('tempo');
+    const timeSigSpan = document.getElementById('timeSig');
+    const keySpan = document.getElementById('key');
+    const scoreSpan = document.getElementById('score');
+    const pianoCountSpan = document.getElementById('pianoCount');
+    const bassCountSpan = document.getElementById('bassCount');
+    const drumsCountSpan = document.getElementById('drumsCount');
+    const melodyCountSpan = document.getElementById('melodyCount');
+    const otherCountSpan = document.getElementById('otherCount');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const deepAnalysisBadge = document.getElementById('deepAnalysisBadge');
+
+    // Guided mode toggle
+    guidedModeCheckbox.addEventListener('change', () => {
+        guidedPanel.style.display = guidedModeCheckbox.checked ? 'block' : 'none';
+    });
+
+    // Timer variables
+    let localTimerInterval = null;
+    let taskStartTime = 0;
+
+    function startLocalClock() {
+        if (localTimerInterval) clearInterval(localTimerInterval);
+        taskStartTime = Date.now();
+        localTimerInterval = setInterval(() => {
+            const now = Date.now();
+            const diff = Math.floor((now - taskStartTime) / 1000);
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+            const elapsedEl = document.getElementById('elapsed-time');
+            if (elapsedEl) {
+                elapsedEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    function stopLocalClock() {
+        if (localTimerInterval) {
+            clearInterval(localTimerInterval);
+            localTimerInterval = null;
+        }
+    }
+
+    let currentTaskId = null;
+    let pollingInterval = null;
+    let webSocket = null;
+    let wsHeartbeat = null;
+    let useWebSocket = true;
+    let reconnectAttempts = 0;
+
+    // Drag & Drop handlers
+    dropZone.onclick = () => fileInput.click();
+
+    dropZone.ondragover = (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    };
+
+    dropZone.ondragleave = () => {
+        dropZone.classList.remove('drag-over');
+    };
+
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('audio/')) {
+            fileInput.files = e.dataTransfer.files;
+            fileNameDiv.innerHTML = `✅ ${file.name}`;
+        }
+    };
+
+    fileInput.onchange = (e) => {
+        if (e.target.files.length) {
+            fileNameDiv.innerHTML = `✅ ${e.target.files[0].name}`;
+        } else {
+            fileNameDiv.innerHTML = '';
+        }
+    };
+
+    function updateProgress(progress, message, serverConfidence, stage) {
+        const percent = Math.floor(progress);
+        progressFill.style.width = `${percent}%`;
+        progressFill.innerText = `${percent}%`;
+        statusTextSpan.innerText = message || `Processing... ${percent}%`;
+
+        if (serverConfidence !== undefined && serverConfidence > 0 && confidenceTextSpan) {
+            confidenceTextSpan.innerHTML = `${Math.round(serverConfidence * 100)}% Confidence`;
+        }
+
+        if (stage) {
+            stageTextSpan.innerText = stage;
+        } else if (progress < 15) {
+            stageTextSpan.innerText = "🔊 Demucs separation + Bass enhancement";
+        } else if (progress < 35) {
+            stageTextSpan.innerText = "🧠 NMF drum decomposition (learning templates)";
+        } else if (progress < 55) {
+            stageTextSpan.innerText = "🥁 Drum classification + Schoenberg Mirrors";
+        } else if (progress < 75) {
+            stageTextSpan.innerText = "🎹 Pitch transcription (Basic Pitch / CREPE / SPICE)";
+        } else if (progress < 90) {
+            stageTextSpan.innerText = "⚖️ Confidence Router + Grid snapping";
+        } else {
+            stageTextSpan.innerText = "🎵 Final assembly + MIDI export";
+        }
+    }
+
+    function updateConnectionStatus(connected, message) {
+        if (connected) {
+            connectionStatusSpan.className = 'connection-status connected';
+            connectionStatusSpan.innerHTML = '🔌 WebSocket Connected';
+        } else if (message === 'connecting') {
+            connectionStatusSpan.className = 'connection-status connecting';
+            connectionStatusSpan.innerHTML = '🔄 Connecting to server...';
+        } else {
+            connectionStatusSpan.className = 'connection-status disconnected';
+            connectionStatusSpan.innerHTML = message || '⚠️ Using polling mode';
+        }
+    }
+
+    // WebSocket connection
+    function connectWebSocket(taskId) {
+        if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+            webSocket.close();
+        }
+
+        if (wsHeartbeat) clearInterval(wsHeartbeat);
+
+        try {
+            const wsUrl = `ws://127.0.0.1:8000/ws/${taskId}`;
+            console.log(`Connecting WebSocket to: ${wsUrl}`);
+            webSocket = new WebSocket(wsUrl);
+
+            updateConnectionStatus(false, 'connecting');
+
+            webSocket.onopen = () => {
+                console.log('WebSocket connected');
+                updateConnectionStatus(true, 'WebSocket Connected');
+                useWebSocket = true;
+                reconnectAttempts = 0;
+
+                wsHeartbeat = setInterval(() => {
+                    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+                        webSocket.send(JSON.stringify({type: 'ping'}));
+                    }
+                }, 25000);
+            };
+
+            webSocket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+
+                    if (data.type === 'ping') return;
+                    if (data.type === 'connected') {
+                        console.log('WebSocket handshake complete');
+                        return;
+                    }
+                    if (data.type === 'end') {
+                        console.log('WebSocket stream ended');
+                        return;
+                    }
+
+                    if (data.progress !== undefined) {
+                        updateProgress(data.progress, data.message, data.confidence, data.stage);
+                    }
+
+                    if (data.status === 'completed') {
+                        console.log('Task completed');
+                        stopLocalClock();
+                        if (wsHeartbeat) clearInterval(wsHeartbeat);
+                        webSocket.close();
+                        fetchFinalResult(taskId);
+                    } else if (data.status === 'failed') {
+                        console.log('Task failed:', data.error);
+                        stopLocalClock();
+                        showError(data.message || data.error || 'Pipeline failed');
+                        analyzeBtn.disabled = false;
+                        loadingPanel.classList.add('hidden');
+                        if (wsHeartbeat) clearInterval(wsHeartbeat);
+                        webSocket.close();
+                    }
+                } catch (err) {
+                    console.error('WebSocket message parse error:', err);
+                }
+            };
+
+            webSocket.onerror = (err) => {
+                console.error('WebSocket error:', err);
+                if (wsHeartbeat) clearInterval(wsHeartbeat);
+                updateConnectionStatus(false, '⚠️ WebSocket failed');
+                useWebSocket = false;
+                startPolling(taskId);
+            };
+
+            webSocket.onclose = () => {
+                console.log('WebSocket closed');
+                if (wsHeartbeat) clearInterval(wsHeartbeat);
+                if (useWebSocket && reconnectAttempts < 2) {
+                    reconnectAttempts++;
+                    console.log(`Reconnecting attempt ${reconnectAttempts}...`);
+                    setTimeout(() => connectWebSocket(taskId), 1000);
+                } else if (useWebSocket) {
+                    startPolling(taskId);
+                }
+            };
+
+        } catch (err) {
+            console.error('WebSocket connection error:', err);
+            updateConnectionStatus(false, '⚠️ WebSocket unavailable');
+            useWebSocket = false;
+            startPolling(taskId);
+        }
+    }
+
+    // Polling fallback
+    function startPolling(taskId) {
+        if (pollingInterval) clearInterval(pollingInterval);
+        updateConnectionStatus(false, '📡 Polling mode');
+
+        pollingInterval = setInterval(async () => {
+            try {
+                const resp = await fetch(`http://127.0.0.1:8000/status/${taskId}`);
+                if (!resp.ok) {
+                    if (resp.status === 404) return;
+                    throw new Error(`Status error: ${resp.status}`);
+                }
+                const task = await resp.json();
+
+                updateProgress(task.progress || 0, task.message, task.confidence);
+
+                if (task.status === 'completed') {
+                    clearInterval(pollingInterval);
+                    stopLocalClock();
+                    fetchFinalResult(taskId);
+                } else if (task.status === 'failed') {
+                    clearInterval(pollingInterval);
+                    stopLocalClock();
+                    showError(`Pipeline failed: ${task.error || 'Unknown error'}`);
+                    analyzeBtn.disabled = false;
+                    loadingPanel.classList.add('hidden');
+                }
+            } catch (err) {
+                console.warn('Polling error:', err);
+            }
+        }, 5000);
+    }
+
+    // Fetch final result
+    async function fetchFinalResult(taskId) {
+        try {
+            const resp = await fetch(`http://127.0.0.1:8000/result/${taskId}`);
+            if (!resp.ok) throw new Error('Result fetch failed');
+            const data = await resp.json();
+
+            totalNotesSpan.innerText = data.note_count || 0;
+            drumHitsSpan.innerText = data.drum_hits || 0;
+            tempoSpan.innerText = data.tempo ? Math.round(data.tempo) : '—';
+            timeSigSpan.innerText = data.time_signature || '—';
+            keySpan.innerText = data.key || '—';
+            scoreSpan.innerText = `${Math.round(data.score || 0)}%`;
+
+            if (data.metadata && data.metadata.track_counts) {
+                pianoCountSpan.innerText = data.metadata.track_counts.piano || 0;
+                bassCountSpan.innerText = data.metadata.track_counts.bass || 0;
+                drumsCountSpan.innerText = data.metadata.track_counts.drums || 0;
+                melodyCountSpan.innerText = data.metadata.track_counts.melody || 0;
+                otherCountSpan.innerText = data.metadata.track_counts.other || 0;
+            } else {
+                const total = data.note_count || 0;
+                pianoCountSpan.innerText = Math.floor(total * 0.35);
+                bassCountSpan.innerText = Math.floor(total * 0.2);
+                drumsCountSpan.innerText = data.drum_hits || 0;
+                melodyCountSpan.innerText = Math.floor(total * 0.3);
+                otherCountSpan.innerText = Math.floor(total * 0.05);
+            }
+
+            if (data.deep_analysis_triggered) {
+                deepAnalysisBadge.classList.remove('hidden');
+            } else {
+                deepAnalysisBadge.classList.add('hidden');
+            }
+
+            loadingPanel.classList.add('hidden');
+            resultsPanel.classList.remove('hidden');
+            analyzeBtn.disabled = false;
+            currentTaskId = taskId;
+
+        } catch (err) {
+            console.error('Result error:', err);
+            showError(`Could not load results: ${err.message}`);
+            analyzeBtn.disabled = false;
+            loadingPanel.classList.add('hidden');
+        }
+    }
+
+    function showError(message) {
+        errorPanel.innerHTML = `❌ ${message}`;
+        errorPanel.classList.remove('hidden');
+        setTimeout(() => {
+            errorPanel.classList.add('hidden');
+        }, 10000);
+    }
+
+    // Build URL with parameters
+    function buildAnalyzeUrl() {
+        let url = `http://127.0.0.1:8000/analyze?truncate=${truncateSelect.value}`;
+
+        if (deepAnalysisCheckbox.checked) {
+            url += `&deep_analysis=true`;
+        }
+
+        if (musicBoxCheckbox.checked) {
+            url += `&music_box=true`;
+        }
+
+        if (guidedModeCheckbox.checked) {
+            if (userTempo.value) {
+                url += `&user_tempo=${userTempo.value}`;
+            }
+            if (userTimeSig.value) {
+                url += `&user_time_sig=${userTimeSig.value}`;
+            }
+            if (userKey.value) {
+                url += `&user_key=${userKey.value}`;
+            }
+        }
+
+        return url;
+    }
+
+    // Main analyze function using Web Worker
+    analyzeBtn.onclick = async () => {
+        if (!fileInput.files[0]) {
+            alert('Please select an audio file first');
+            return;
+        }
+
+        const file = fileInput.files[0];
+        if (file.size > 50 * 1024 * 1024) {
+            alert('File too large. Maximum 50MB.');
+            return;
+        }
+
+        analyzeBtn.disabled = true;
+        loadingPanel.classList.remove('hidden');
+        resultsPanel.classList.add('hidden');
+        errorPanel.classList.add('hidden');
+        deepAnalysisBadge.classList.add('hidden');
+
+        updateProgress(0, 'Uploading audio...');
+        if (confidenceTextSpan) confidenceTextSpan.innerHTML = '-- Confidence';
+        updateConnectionStatus(false, 'connecting');
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const url = buildAnalyzeUrl();
+
+        try {
+            // Use Web Worker for upload
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(`Upload failed: ${response.status} ${text}`);
+            }
+
+            const result = await response.json();
+            currentTaskId = result.task_id;
+
+            startLocalClock();
+            connectWebSocket(currentTaskId);
+
+        } catch (err) {
+            console.error('Upload error:', err);
+            showError(`Connection error: ${err.message}\n\nMake sure the Grimlock server is running on http://127.0.0.1:8000`);
+            analyzeBtn.disabled = false;
+            loadingPanel.classList.add('hidden');
+            stopLocalClock();
+        }
+    };
+
+    downloadBtn.onclick = () => {
+        if (currentTaskId) {
+            window.location.href = `http://127.0.0.1:8000/download/${currentTaskId}`;
+        } else {
+            alert('No completed task yet');
+        }
+    };
+
+    // Server health check
+    async function checkServerHealth() {
+        try {
+            const resp = await fetch('http://127.0.0.1:8000/health');
+            if (resp.ok) {
+                const data = await resp.json();
+                console.log('Server health:', data);
+                connectionStatusSpan.innerHTML = '✅ Server ready';
+                connectionStatusSpan.className = 'connection-status connected';
+            } else {
+                connectionStatusSpan.innerHTML = '⚠️ Server unreachable';
+                connectionStatusSpan.className = 'connection-status disconnected';
+            }
+        } catch (err) {
+            console.warn('Server health check failed:', err);
+            connectionStatusSpan.innerHTML = '⚠️ Server not running';
+            connectionStatusSpan.className = 'connection-status disconnected';
+        }
+    }
+
+    checkServerHealth();
+    setInterval(checkServerHealth, 30000);
+
+    window.onbeforeunload = () => {
+        if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+            webSocket.close();
+        }
+        if (wsHeartbeat) clearInterval(wsHeartbeat);
+        if (pollingInterval) clearInterval(pollingInterval);
+        if (localTimerInterval) clearInterval(localTimerInterval);
+        if (worker) {
+            worker.terminate();
+        }
+    };
+</script>
+</body>
+</html>
